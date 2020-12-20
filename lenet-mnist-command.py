@@ -145,7 +145,6 @@ def evaluate(X_data, y_data):
 #     print("Model saved")
 
 with tf.Session() as sess:
-    configFile = sys.argv[1]
     saver.restore(sess, tf.train.latest_checkpoint('.'))
 
     test_accuracy = evaluate(X_test, y_test)
@@ -158,7 +157,7 @@ with tf.Session() as sess:
     correctIndex = correctIndex.flatten()
 
     # Add the fault injection code here to instrument the graph
-    fi = ti.TensorFI(sess,configFileName=configFile, logLevel = 10, name = "lenet", disableInjections=False)
+    fi = ti.TensorFI(sess,configFileName='default.yaml', logLevel = 10, name = "lenet", disableInjections=False)
     test_accuracy = evaluate(X_test, y_test)
     print("Accuracy (with injections): {:.3f}".format(test_accuracy))
 
@@ -184,11 +183,7 @@ with tf.Session() as sess:
                 SDC +=1
         totalSDC += SDC
         resFile.write("\n")
-    sdcRates = totalSDC/10000.0
-    print("SDC rates", sdcRates)
-    allsdcFile = open(os.path.join(sys.argv[2], 'allsdc.csv'), 'a')
-    allsdcFile.write(str(sdcRates))
-    allsdcFile.write('\n')
+        print("SDC rates", totalSDC/10000.0)
 
 
 
