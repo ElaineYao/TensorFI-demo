@@ -4,19 +4,25 @@ LeNet CNN for MNIST
 Project: https://github.com/sujaybabruwad/LeNet-in-Tensorflow
 '''
 
+
 from tensorflow.examples.tutorials.mnist import input_data
 import numpy as np
 import random
 from sklearn.utils import shuffle
 import tensorflow as tf
-import TensorFI as ti
+# import TensorFI as ti
 import os
 import sys
 
+sys.path.append(r'/home/elaine/pycharmProjects/TensorFI/TensorFI')
+import tensorFI as ti
+
+#
 mnist = input_data.read_data_sets("MNIST_data/", reshape=False)
 X_train, y_train           = mnist.train.images, mnist.train.labels
 X_validation, y_validation = mnist.validation.images, mnist.validation.labels
 X_test, y_test             = mnist.test.images[:256], mnist.test.labels[:256]
+
 
 assert(len(X_train) == len(y_train))
 assert(len(X_validation) == len(y_validation))
@@ -145,7 +151,7 @@ def evaluate(X_data, y_data):
 #     print("Model saved")
 
 with tf.Session() as sess:
-    saver.restore(sess, tf.train.latest_checkpoint('.'))
+    saver.restore(sess, tf.train.latest_checkpoint('./lenet-checkpoint'))
 
     test_accuracy = evaluate(X_test, y_test)
     print("Accuracy (with no injections): {:.3f}".format(test_accuracy))
@@ -157,7 +163,7 @@ with tf.Session() as sess:
     correctIndex = correctIndex.flatten()
 
     # Add the fault injection code here to instrument the graph
-    fi = ti.TensorFI(sess,configFileName='default.yaml', logLevel = 10, name = "lenet", disableInjections=False)
+    fi = ti.TensorFI(sess,configFileName='./confFiles/eb/default-1eb.yaml', logLevel = 10, name = "lenet", disableInjections=False)
     test_accuracy = evaluate(X_test, y_test)
     print("Accuracy (with injections): {:.3f}".format(test_accuracy))
 
@@ -183,7 +189,7 @@ with tf.Session() as sess:
                 SDC +=1
         totalSDC += SDC
         resFile.write("\n")
-        print("SDC rates", totalSDC/10000.0)
+    print("SDC rates", totalSDC/100.0)
 
 
 

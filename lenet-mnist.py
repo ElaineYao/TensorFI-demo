@@ -13,6 +13,7 @@ import TensorFI as ti
 import os
 import sys
 
+
 mnist = input_data.read_data_sets("MNIST_data/", reshape=False)
 X_train, y_train           = mnist.train.images, mnist.train.labels
 X_validation, y_validation = mnist.validation.images, mnist.validation.labels
@@ -146,7 +147,7 @@ def evaluate(X_data, y_data):
 
 with tf.Session() as sess:
     configFile = sys.argv[1]
-    saver.restore(sess, tf.train.latest_checkpoint('.'))
+    saver.restore(sess, tf.train.latest_checkpoint('./lenet-checkpoint/'))
 
     test_accuracy = evaluate(X_test, y_test)
     print("Accuracy (with no injections): {:.3f}".format(test_accuracy))
@@ -164,7 +165,7 @@ with tf.Session() as sess:
 
 
     totalSDC = 0
-    totalFI = 10
+    totalFI = 1000
     resFile = open("lenet-bitFI10.csv", "a")
 
     for i in range(10):
