@@ -171,25 +171,34 @@ with tf.Session() as sess:
     totalSDC = 0
     totalFI = 10
     resFile = open("lenet-bitFI10.csv", "a")
+    XtestShape = list(X_test.shape)
+    ytestShape = list(y_test.shape)
+    XtestShape[0] = 1
+    ytestShape[0] = 1
+    txShape = tuple(XtestShape)
+    tyShape = tuple(ytestShape)
 
     for i in range(10):
         # construct single input
         SDC = 0
         tx = X_test[correctIndex[i]]
         ty = y_test[correctIndex[i]]
-        tx = tx.reshape(1, 32, 32, 1)
-        ty = ty.reshape(1)
+        tx = tx.reshape(txShape)
+        ty = ty.reshape(tyShape)
         for j in range(totalFI):
             acy = sess.run(correct_prediction, feed_dict={x: tx, y: ty})
             # FI does not result in SDC
-            if (acy == True):
-                resFile.write(`1` + ",")
-            else:
-                resFile.write(`0` + ",")
+            # if (acy == True):
+                # resFile.write(`1` + ",")
+            # else:
+            #     resFile.write(`0` + ",")
+            #     SDC +=1
+            if (acy == False):
                 SDC +=1
         totalSDC += SDC
-        resFile.write("\n")
-    print("SDC rates", totalSDC/100.0)
+    SDCrates = totalSDC/(10.0*totalFI)
+    resFile.write(str(SDCrates))
+    print("SDC rates: ", SDCrates)
 
 
 
